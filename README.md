@@ -13,14 +13,6 @@
 
 ````yaml
 books:
-  - name: '我夺舍了魔皇'
-    url: 'https://m.biquke.com/bq/67/67460/'
-    selector: 'body > div.cover > ul:nth-child(8) > li:nth-child(1)'
-
-  - name: '仙子请自重'
-    url: 'https://m.nuoqiu.com/nq61311/'
-    selector: '#chapterlist > p:nth-child(1)'
-
   - name: '赝太子'
     url: 'https://m.biquke.com/bq/70/70059/'
     selector: 'body > div.cover > ul:nth-child(8) > li:nth-child(1)'
