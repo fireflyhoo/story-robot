@@ -21,7 +21,6 @@ func main() {
 	conf = new(IYaml)
 	yamlFile, err := ioutil.ReadFile("conf.yaml")
 
-
 	log.Println("yamlFile:", yamlFile)
 	if err != nil {
 		log.Printf("yamlFile.Get err #%v ", err)
@@ -35,7 +34,7 @@ func main() {
 
 	c := cron.New()
 	c.AddFunc("0 * * * * *", func() {
-		for _,book := range conf.Books {
+		for _, book := range conf.Books {
 			getStoryLast(book.Name, book.Url, book.Selector)
 		}
 
@@ -46,17 +45,18 @@ func main() {
 
 type IYaml struct {
 	Books []Book
-	Im string
+	Im    string
 }
 
 type Book struct {
-	Name  string
-	Url string
+	Name     string
+	Url      string
 	Selector string
 }
 
 func getStoryLast(bookName string, url string, selector string) {
 	res, err := http.Get(url)
+	fmt.Println("errors:", err)
 
 	opt := nutsdb.DefaultOptions
 	opt.Dir = "./nutsdb"
@@ -69,26 +69,27 @@ func getStoryLast(bookName string, url string, selector string) {
 
 	db.View(func(tx *nutsdb.Tx) error {
 		text, er := tx.Get("books", []byte(bookName))
-		if (er == nil) {
+		if er == nil {
 			lastTitle = string(text.Value)
 		}
 		return nil
-	});
-	if (err == nil) {
+	})
+	if err == nil {
 		doc, err := goquery.NewDocumentFromReader(res.Body)
 		if err != nil {
 			panic(err)
 		}
+
 		lastNode := doc.Find(selector)
-		currentTitle := lastNode.Find("a").Text()
-		log.Println("《" +bookName+"》小说最新章节名为 =>", currentTitle)
-		if (lastTitle != currentTitle) {
+		currentTitle := lastNode.Text()
+		log.Println("《"+bookName+"》小说最新章节名为 =>", currentTitle)
+		if lastTitle != currentTitle {
 			db.Update(func(tx *nutsdb.Tx) error {
 				tx.Put("books", []byte(bookName), []byte(currentTitle), nutsdb.Persistent)
 				return nil
 			})
-			log.Println("章节有更新:",bookName+"更新了,新的一个章节为:"+currentTitle,"", url)
-			sendMsg("《" +bookName+"》更新了,新的一个章节为:"+currentTitle,"", url)
+			log.Println("章节有更新:", bookName+"更新了,新的一个章节为:"+currentTitle, "", url)
+			sendMsg("《"+bookName+"》更新了,新的一个章节为:"+currentTitle, "", url)
 		}
 
 	} else {
@@ -110,8 +111,8 @@ func sendMsg(title string, context string, link string) {
 	data = strings.Replace(data, "$text", title, -1)
 	data = strings.Replace(data, "$messageUrl", link, -1)
 
-	resp,err:= http.Post(url, "application/json", strings.NewReader(data))
-	if(err == nil){
+	resp, err := http.Post(url, "application/json", strings.NewReader(data))
+	if err == nil {
 		ds, _ := ioutil.ReadAll(resp.Body)
 		log.Println(string(ds))
 
