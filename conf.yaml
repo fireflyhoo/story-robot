@@ -1,15 +1,8 @@
 books:
-  - name: '我夺舍了魔皇'
-    url: 'https://m.biquke.com/bq/67/67460/'
-    selector: 'body > div.cover > ul:nth-child(8) > li:nth-child(1)'
-
-  - name: '仙子请自重'
-    url: 'https://m.nuoqiu.com/nq61311/'
-    selector: '#chapterlist > p:nth-child(1)'
-
-  - name: '赝太子'
-    url: 'https://m.biquke.com/bq/70/70059/'
-    selector: 'body > div.cover > ul:nth-child(8) > li:nth-child(1)'
+  - name: '我被妖魔圈养了'
+    url: 'https://m.biqusa.com/wapbook/137639.html'
+    selector: '#chapterlist > p:nth-child(1) > a'
 
 
-im: 'https://oapi.dingtalk.com/robot/send?access_token='
+im: 'https://oapi.dingtalk.com/robot/send?access_token=52644237696164656408cfca1683805b96effa918dd28f1107274d44d88629f4'
+secret: 'SEC0c0e1f0fdeacfe2ace81eafad598bbf0efa0efc635c65e0c9c105a44b05cd315'

@@ -14,13 +14,22 @@
 ````yaml
 books:
   - name: '赝太子'
-    url: 'https://m.biquke.com/bq/70/70059/'
-    selector: 'body > div.cover > ul:nth-child(8) > li:nth-child(1)'
+    # 小说网页的地址
+    url: 'https://m.biqusa.com/wapbook/137639.html'
+    
+    # 小说最新一张的 位置  
+    selector: '#chapterlist > p:nth-child(1) > a'
 
 
 im: 'https://oapi.dingtalk.com/robot/send?access_token=Token'
+secret: 'xxxxx'
 
 ````
+
+!![dome](./dome.png)
+
+
+
 
 
 ## 源代码

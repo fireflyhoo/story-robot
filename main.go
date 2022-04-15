@@ -1,18 +1,31 @@
 package main
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/robfig/cron"
 	"github.com/xujiajun/nutsdb"
 	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"strings"
 )
 
 var conf *IYaml //
+
+func computeHmacSha256(data string, secret string) string {
+	key := []byte(secret)
+	h := hmac.New(sha256.New, key)
+	h.Write([]byte(data))
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
 
 func main() {
 	fmt.Println("监听内容")
@@ -44,8 +57,9 @@ func main() {
 }
 
 type IYaml struct {
-	Books []Book
-	Im    string
+	Books  []Book
+	Im     string
+	Secret string
 }
 
 type Book struct {
@@ -97,8 +111,16 @@ func getStoryLast(bookName string, url string, selector string) {
 	}
 }
 
+func getSignedURL(url string, secret string) string {
+	nowTime := strconv.FormatInt(time.Now().Unix()*1000, 10)
+	stringToSign := nowTime + "\n" + secret
+	sign := computeHmacSha256(stringToSign, secret)
+	return url + "&timestamp=" + nowTime + "&sign=" + sign
+
+}
+
 func sendMsg(title string, context string, link string) {
-	url := conf.Im
+	url := getSignedURL(conf.Im, conf.Secret)
 	data := strings.Replace(`{
 					"msgtype": "link",
 						"link": {
